@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AudioClassifier mAudioClassifier;
     private AudioRecord mAudioRecord;
-    private long classficationInterval = 500;       // 0.5 sec
+    private long classficationInterval = 500;       // 0.5 sec (샘플링 주기)
     private Handler mHandler;
 
     @Override
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
-                    //long startTime = System.currentTimeMillis();
                     audioTensor.load(record);
                     List<Classifications> output = classifier.classify(audioTensor);
                     List<Category> filterModelOutput = output.get(0).getCategories();
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
                         if (c.getScore() > MINIMUM_DISPLAY_THRESHOLD)
                             Log.d("tensorAudio_java", " label : " + c.getLabel() + " score : " + c.getScore());
                     }
-                    //long finishTime = System.currentTimeMillis();
 
                     mHandler.postDelayed(this,classficationInterval);
                 }
@@ -83,14 +81,6 @@ public class MainActivity extends AppCompatActivity {
         mAudioRecord.stop();
         mAudioRecord = null;
         mAudioClassifier = null;
-    }
-
-    @Override
-    public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
-        //if(isTopResumedActivity)
-        //    startAudioClassification();
-        //else
-        //    stopAudioClassfication();
     }
 
     @Override
